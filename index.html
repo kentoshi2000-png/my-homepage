@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>シンデレラケアプランセンター</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", sans-serif;
+            background-color: #fcfbfa;
+            color: #333;
+            scroll-behavior: smooth;
+        }
+
+        /* 画面の右上端に強制的に固定するハンバーガーボタン */
+        .menu-btn {
+            position: fixed !important;
+            top: 15px !important;
+            right: 15px !important;
+            width: 45px;
+            height: 45px;
+            background-color: #d96b6b;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            z-index: 99999;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .menu-btn span {
+            width: 25px;
+            height: 3px;
+            background-color: #fff;
+            border-radius: 2px;
+        }
+
+        /* メニューリスト全体（画面の右側からスライドして出てくる） */
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 350px;
+            height: 100%;
+            background-color: #fdf6ec;
+            box-shadow: -4px 0 10px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 100000;
+            padding: 60px 20px;
+            box-sizing: border-box;
+        }
+        .nav-menu.active {
+            right: 0;
+        }
+
+        /* 閉じるボタン（×） */
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333;
+        }
+
+        /* メニューのリスト項目 */
+        .nav-menu ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 30px;
+        }
+        .nav-menu li {
+            border-bottom: 1px solid #e0d0c0;
+        }
+        .nav-menu li a {
+            display: block;
+            padding: 15px 10px;
+            color: #333;
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: bold;
+        }
+        .nav-menu li a:hover {
+            color: #d96b6b;
+        }
+
+        /* ヘッダー画像エリア */
+        .hero {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px 10px 20px;
+            text-align: center;
+        }
+
+        .hero-img {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* 本文エリア */
+        .content {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px 20px 40px 20px;
+        }
+
+        .content h3 {
+            font-size: 1.2rem;
+            color: #222;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .content p {
+            line-height: 1.8;
+            color: #444;
+            font-size: 1rem;
+            text-align: left;
+        }
+
+        /* フッターメニュー */
+        .footer-menu {
+            max-width: 700px;
+            margin: 20px auto 60px auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .footer-menu a {
+            color: #333;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .footer-menu a:hover {
+            color: #d96b6b;
+            text-decoration: underline;
+        }
+
+        /* ページトップに戻るボタン */
+        .pagetop {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #d96b6b;
+            color: #fff;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.2s, transform 0.2s;
+            z-index: 999;
+        }
+
+        .pagetop:hover {
+            background-color: #c05555;
+            transform: translateY(-2px);
+        }
+
+        .pagetop .arrow {
+            font-size: 1.1rem;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ページの一番上を示す目印 -->
+    <div id="top"></div>
+
+    <!-- 画面右上のハンバーガーメニューボタン -->
+    <div class="menu-btn" id="menuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <!-- スライドして開くメニューリスト -->
+    <nav class="nav-menu" id="navMenu">
+        <button class="close-btn" id="closeBtn">×</button>
+        <ul>
+            <li><a href="#top">HOME</a></li>
+            <li><a href="#">お知らせ</a></li>
+            <li><a href="#">わたしたちについて</a></li>
+            <li><a href="#">個人の情報の取り扱いについて</a></li>
+        </ul>
+    </nav>
+
+    <!-- ヘッダー画像 -->
+    <div class="hero">
+        <img src="cinderera.png" alt="シンデレラケアプランセンター" class="hero-img">
+    </div>
+
+    <!-- 本文エリア -->
+    <div class="content">
+        <h3>シンデレラケアプランセンターについて</h3>
+        <p>
+            わたしは「つくらないケアマネ」です。わたしは、ご本人がこうありたい、こうあってきたというイメージをつくります。ご本人がケアする方に伝えやすいように、イメージが目で見て分かるように、文書ではなく、絵や動画でつくりたいと思います。ただいま、開設準備中です。
+        </p>
+    </div>
+
+    <!-- フッターメニュー -->
+    <div class="footer-menu">
+        <a href="#">お知らせ</a>
+        <a href="#">わたしたちについて</a>
+        <a href="#">個人の情報の取り扱いについて</a>
+    </div>
+
+    <!-- ページトップに戻るボタン -->
+    <a href="#top" class="pagetop">
+        <span class="arrow">▲</span>
+        <span>トップへ</span>
+    </a>
+
+    <!-- メニューの開閉を動かすプログラム -->
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const navMenu = document.getElementById('navMenu');
+        const closeBtn = document.getElementById('closeBtn');
+
+        menuBtn.addEventListener('click', () => {
+            navMenu.classList.add('active');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            navMenu.classList.remove('active');
+        });
+    </script>
+
+</body>
+</html>
