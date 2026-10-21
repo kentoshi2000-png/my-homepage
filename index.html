@@ -14,6 +14,12 @@
  background-color: #fcfbfa;
  color: #333;
  scroll-behavior: smooth;
+ transition: margin-right 0.3s ease;
+ }
+
+ /* AIチャット開いた時にメイン画面を少し詰める（PC用） */
+ body.chat-open {
+ margin-right: 420px;
  }
 
  /* 画面の右上端に強制的に固定するハンバーガーボタン */
@@ -41,7 +47,7 @@
  border-radius: 2px;
  }
 
- /* メニューリスト全体（画面の右側からスライドして出てくる） */
+ /* メニューリスト全体 */
  .nav-menu {
  position: fixed;
  top: 0;
@@ -60,7 +66,6 @@
  right: 0;
  }
 
- /* 閉じるボタン（×） */
  .close-btn {
  position: absolute;
  top: 20px;
@@ -72,7 +77,6 @@
  color: #333;
  }
 
- /* メニューのリスト項目 */
  .nav-menu ul {
  list-style: none;
  padding: 0;
@@ -131,7 +135,6 @@
  margin-bottom: 20px;
  }
 
- /* 追加したケアプラン画像のスタイル */
  .pdf-link-image {
  text-align: center;
  margin-top: 30px;
@@ -160,7 +163,6 @@
  text-align: center;
  }
 
- /* フッターメニュー */
  .footer-menu {
  display: flex;
  justify-content: center;
@@ -182,7 +184,6 @@
  text-decoration: underline;
  }
 
- /* SNSリンクボタン */
  .sns-links {
  display: flex;
  justify-content: center;
@@ -223,7 +224,6 @@
  fill: currentColor;
  }
 
- /* 著作権（コピーライト）表記 */
  .copyright {
  font-size: 0.85rem;
  color: #888;
@@ -232,7 +232,6 @@
  letter-spacing: 0.5px;
  }
 
- /* ページトップに戻るボタン */
  .pagetop {
  position: fixed;
  bottom: 20px;
@@ -264,7 +263,7 @@
  margin-bottom: 2px;
  }
 
- /* --- お知らせ・プライバシーポリシー共通ポップアップ（モーダル） --- */
+ /* --- お知らせバッジ --- */
  .princess-badge {
  position: fixed;
  bottom: 90px;
@@ -303,6 +302,88 @@
  60% {transform: translateY(-3px);}
  }
 
+ /* --- 画面分割用：AI愛ちゃんサイドパネル（チャット窓） --- */
+ .ai-chat-panel {
+ position: fixed;
+ top: 0;
+ right: -430px;
+ width: 420px;
+ height: 100%;
+ background-color: #fff;
+ box-shadow: -5px 0 25px rgba(0,0,0,0.2);
+ transition: right 0.3s ease-in-out;
+ z-index: 999990;
+ display: flex;
+ flex-direction: column;
+ }
+
+ .ai-chat-panel.open {
+ right: 0;
+ }
+
+ .ai-chat-header {
+ background-color: #d96b6b;
+ color: #fff;
+ padding: 12px 18px;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ font-weight: bold;
+ font-size: 1rem;
+ }
+
+ .ai-chat-close-btn {
+ background: none;
+ border: none;
+ color: #fff;
+ font-size: 1.5rem;
+ cursor: pointer;
+ line-height: 1;
+ }
+
+ .ai-chat-iframe {
+ width: 100%;
+ height: 100%;
+ border: none;
+ flex: 1;
+ }
+
+ /* AI愛ちゃん起動トリガーボタン（画面左下固定） */
+ .ai-toggle-btn {
+ position: fixed;
+ bottom: 20px;
+ left: 20px;
+ background: linear-gradient(135deg, #d96b6b, #e88b8b);
+ color: #fff;
+ border: none;
+ padding: 10px 18px;
+ border-radius: 30px;
+ font-weight: bold;
+ font-size: 0.9rem;
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ cursor: pointer;
+ box-shadow: 0 4px 15px rgba(217, 107, 107, 0.4);
+ z-index: 999;
+ transition: transform 0.2s, box-shadow 0.2s;
+ }
+
+ .ai-toggle-btn:hover {
+ transform: translateY(-2px);
+ box-shadow: 0 6px 18px rgba(217, 107, 107, 0.5);
+ }
+
+ .ai-toggle-btn img {
+ width: 28px;
+ height: 28px;
+ border-radius: 50%;
+ background: #fff;
+ padding: 2px;
+ object-fit: cover;
+ }
+
+ /* モーダル共通スタイル */
  .modal-overlay {
  position: fixed;
  top: 0;
@@ -379,21 +460,30 @@
  .modal-close-btn:hover {
  background-color: #c05555;
  }
+
+ @media (max-width: 768px) {
+ body.chat-open {
+ margin-right: 0;
+ }
+ .ai-chat-panel {
+ width: 100%;
+ right: -100%;
+ }
+ }
  </style>
 </head>
 <body>
 
- <!-- ページの一番上を示す目印 -->
  <div id="top"></div>
 
- <!-- 画面右上のハンバーガーメニューボタン -->
+ <!-- ハンバーガーボタン -->
  <div class="menu-btn" id="menuBtn">
  <span></span>
  <span></span>
  <span></span>
  </div>
 
- <!-- スライドして開くメニューリスト -->
+ <!-- スライドメニュー -->
  <nav class="nav-menu" id="navMenu">
  <button class="close-btn" id="closeBtn">×</button>
  <ul>
@@ -419,7 +509,6 @@
  ことし、ケアマネ実務研修を終えました。研修で最初に作ったケアプランの表紙です。クリックしてみて!研修中、このスタイルを通しました。ういういしいですよね。
  </p>
 
- <!-- 下部に配置する画像（クリックすると careplan1.pdf が開く） -->
  <div class="pdf-link-image">
  <a href="careplan1.pdf" target="_blank">
  <img src="careplan1.png" alt="さんのケアプラン">
@@ -427,7 +516,7 @@
  </div>
  </div>
 
- <!-- フッターエリア（メニュー・SNSリンク・著作権） -->
+ <!-- フッターエリア -->
  <footer>
  <div class="footer-menu">
  <a href="#" id="footerNoticeLink">お知らせ</a>
@@ -435,36 +524,47 @@
  <a href="#" id="footerPrivacyLink">個人の情報の取り扱いについて</a>
  </div>
 
- <!-- X & LINE リンクボタン -->
  <div class="sns-links">
- <!-- X（旧Twitter）リンク：href="#" の部分に公式XのURLを入れてください -->
- <a href="http://x.com/@31s8w" target="_blank" class="sns-btn x-btn" aria-label="X (Twitter)">
+ <a href="#" target="_blank" class="sns-btn x-btn" aria-label="X (Twitter)">
  <svg viewBox="0 0 24 24">
  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
  </svg>
  </a>
- <!-- LINE リンク：href="#" の部分に公式LINEのURLを入れてください -->
- <a href="https://line.me/ti/p/@882zulsj" target="_blank" class="sns-btn line-btn" aria-label="LINE">
+ <a href="#" target="_blank" class="sns-btn line-btn" aria-label="LINE">
  <svg viewBox="0 0 24 24">
  <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
  </svg>
  </a>
  </div>
 
- <!-- 著作権（コピーライト） -->
  <p class="copyright">© 2026 Cinderella Careplancenter. All Rights Reserved.</p>
  </footer>
 
- <!-- ページトップに戻るボタン -->
+ <!-- ページトップへ移動ボタン -->
  <a href="#top" class="pagetop">
  <span class="arrow">▲</span>
  <span>トップへ</span>
  </a>
 
- <!-- 右下に常駐するお姫様のお知らせバッジ -->
+ <!-- お知らせバッジ（右下） -->
  <div class="princess-badge" id="openModalBtn">
  <img src="newprincess.png" alt="お姫様">
  <span>お知らせがあります✨</span>
+ </div>
+
+ <!-- ✨ 新追加：AI愛ちゃん相談起動ボタン（左下） -->
+ <button class="ai-toggle-btn" id="aiToggleBtn">
+ <img src="newprincess.png" alt="愛ちゃん">
+ <span>AI愛ちゃんに相談✨</span>
+ </button>
+
+ <!-- ✨ 新追加：AI愛ちゃん画面分割パネル（サイドバー） -->
+ <div class="ai-chat-panel" id="aiChatPanel">
+ <div class="ai-chat-header">
+ <span>✨ AI愛ちゃん相談室</span>
+ <button class="ai-chat-close-btn" id="aiChatCloseBtn">×</button>
+ </div>
+ <iframe src="https://sakai-bot.onrender.com/web-chat" class="ai-chat-iframe"></iframe>
  </div>
 
  <!-- お知らせポップアップ -->
@@ -480,7 +580,7 @@
  </div>
  </div>
 
- <!-- 個人情報の取り扱いについてポップアップ -->
+ <!-- 個人情報ポップアップ -->
  <div class="modal-overlay" id="privacyModal">
  <div class="modal-box">
  <img src="newprincess.png" alt="お姫様">
@@ -510,17 +610,27 @@
  </div>
  </div>
 
- <!-- メニューやポップアップを動かすプログラム -->
  <script>
  const menuBtn = document.getElementById('menuBtn');
  const navMenu = document.getElementById('navMenu');
  const closeBtn = document.getElementById('closeBtn');
 
- menuBtn.addEventListener('click', () => {
- navMenu.classList.add('active');
+ menuBtn.addEventListener('click', () => { navMenu.classList.add('active'); });
+ closeBtn.addEventListener('click', () => { navMenu.classList.remove('active'); });
+
+ // AI愛ちゃん画面分割パネル制御
+ const aiToggleBtn = document.getElementById('aiToggleBtn');
+ const aiChatPanel = document.getElementById('aiChatPanel');
+ const aiChatCloseBtn = document.getElementById('aiChatCloseBtn');
+
+ aiToggleBtn.addEventListener('click', () => {
+ aiChatPanel.classList.toggle('open');
+ document.body.classList.toggle('chat-open');
  });
- closeBtn.addEventListener('click', () => {
- navMenu.classList.remove('active');
+
+ aiChatCloseBtn.addEventListener('click', () => {
+ aiChatPanel.classList.remove('open');
+ document.body.classList.remove('chat-open');
  });
 
  // お知らせモーダル
@@ -536,7 +646,7 @@
  closeModalBtn.addEventListener('click', () => noticeModal.classList.remove('open'));
  noticeModal.addEventListener('click', (e) => { if (e.target === noticeModal) noticeModal.classList.remove('open'); });
 
- // 個人情報の取り扱いについてモーダル
+ // 個人情報モーダル
  const privacyModal = document.getElementById('privacyModal');
  const menuPrivacyLink = document.getElementById('menuPrivacyLink');
  const footerPrivacyLink = document.getElementById('footerPrivacyLink');
