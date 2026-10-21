@@ -623,9 +623,15 @@
  const aiChatPanel = document.getElementById('aiChatPanel');
  const aiChatCloseBtn = document.getElementById('aiChatCloseBtn');
 
+ const aiIframe = document.querySelector('.ai-chat-iframe');
+
  aiToggleBtn.addEventListener('click', () => {
- aiChatPanel.classList.toggle('open');
- document.body.classList.toggle('chat-open');
+   // パネルが開く時、iframeの画面を必ずweb-chatにリセットする
+   if (!aiChatPanel.classList.contains('open')) {
+     aiIframe.src = 'https://sakai-bot.onrender.com/web-chat';
+   }
+   aiChatPanel.classList.toggle('open');
+   document.body.classList.toggle('chat-open');
  });
 
  aiChatCloseBtn.addEventListener('click', () => {
