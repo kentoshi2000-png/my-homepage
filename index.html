@@ -167,9 +167,22 @@
  .footer-menu {
  display: flex;
  justify-content: center;
- gap: 30px;
+ gap: 0; /* flexのgapではなく擬似要素のmarginで調整します */
  flex-wrap: wrap;
  margin-bottom: 25px;
+ }
+
+ /* 各リンクアイテム（リスト）のスタイル */
+ .footer-menu li {
+ list-style: none;
+ margin: 5px 0;
+ }
+
+ /* 最初以外の項目の前に縦線（|）を挿入 */
+ .footer-menu li:not(:first-child)::before {
+ content: "|";
+ margin: 0 12px;
+ color: #bbb;
  }
 
  .footer-menu a {
@@ -522,12 +535,12 @@
 
  <!-- フッターエリア -->
  <footer>
- <div class="footer-menu">
- <a href="#" id="footerNoticeLink">お知らせ</a>
- <a href="#" id="footerAboutLink">わたしたちについて</a>
- <a href="#" id="footerPrivacyLink">個人の情報の取り扱いについて</a>
- <a href="https://sakai-bot.onrender.com/contact">お問い合わせ</a> 
- </div>
+ <ul class="footer-menu">
+ <li><a href="#" id="footerNoticeLink">お知らせ</a></li>
+ <li><a href="#" id="footerPrivacyLink">個人の情報の取り扱いについて</a></li>
+ <li><a href="#" id="footerAboutLink">わたしたちについて</a></li>
+ <li><a href="https://sakai-bot.onrender.com/contact">お問い合わせ</a></li>
+ </ul>
  
  <div class="sns-links">
  <a href="https://x.com/@31s8w" target="_blank" class="sns-btn x-btn" aria-label="X (Twitter)">
