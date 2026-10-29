@@ -102,17 +102,26 @@
  .hero {
  max-width: 900px;
  margin: 0 auto;
- padding: 30px 20px 10px 20px;
+ padding: 30px 0 10px 0;
  text-align: center;
  }
 
+
  .slideshow-container {
  position: relative;
- max-width: 800px;
+ max-width: 100%; /* 👈 横幅いっぱいまで広げる */
  margin: 0 auto;
  overflow: hidden;
  }
 
+ .slide {
+ display: none;
+ width: 100%; /* 👈 横幅は画面幅に合わせる */
+ height: 280px; /* 👈 縦幅をお好みの高さに固定する（例：280px） */
+ object-fit: contain; /* 👈 イラスト全体が綺麗に収まるようにする */
+ border-radius: 4px;
+ }
+ 
  .slide {
  display: none;
  width: 100%;
