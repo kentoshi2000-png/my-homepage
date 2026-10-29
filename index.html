@@ -98,7 +98,7 @@
  color: #d96b6b;
  }
 
- /* ヘッダー画像エリア */
+ /* ヘッダー画像エリア（スライドショー対応） */
  .hero {
  max-width: 900px;
  margin: 0 auto;
@@ -106,12 +106,49 @@
  text-align: center;
  }
 
- .hero-img {
- width: 100%;
+ .slideshow-container {
+ position: relative;
  max-width: 800px;
- height: auto;
- display: block;
  margin: 0 auto;
+ overflow: hidden;
+ }
+
+ .slide {
+ display: none;
+ width: 100%;
+ height: auto;
+ object-fit: cover;
+ border-radius: 4px;
+ }
+
+ .slide.active {
+ display: block;
+ animation: fadeIn 0.8s ease-in-out;
+ }
+
+ @keyframes fadeIn {
+ from { opacity: 0.4; }
+ to { opacity: 1; }
+ }
+
+ /* 下部の丸いドット（インジケーター） */
+ .dot-container {
+ text-align: center;
+ margin-top: 12px;
+ }
+
+ .dot {
+ height: 11px;
+ width: 11px;
+ margin: 0 5px;
+ background-color: #d1d5db;
+ border-radius: 50%;
+ display: inline-block;
+ transition: background-color 0.3s ease;
+ }
+
+ .dot.active-dot {
+ background-color: #10b981; /* 🟢 ご希望の緑色のドット */
  }
 
  /* 本文エリア */
@@ -509,9 +546,20 @@
  </ul>
  </nav>
 
- <!-- ヘッダー画像 -->
+ <!-- ヘッダー画像スライドショーエリア -->
  <div class="hero">
- <img src="cinderera02.png" alt="シンデレラケアプランセンター" class="hero-img">
+ <div class="slideshow-container">
+ <img src="CO01.png" alt="シンデレラケアプランセンター スライド1" class="slide active">
+ <img src="CO02.png" alt="シンデレラケアプランセンター スライド2" class="slide">
+ <img src="CP03.png" alt="シンデレラケアプランセンター スライド3" class="slide">
+ 
+ <!-- ドットインジケーター（〇〇🟢） -->
+ <div class="dot-container">
+ <span class="dot active-dot"></span>
+ <span class="dot"></span>
+ <span class="dot"></span>
+ </div>
+ </div>
  </div>
 
  <!-- 本文エリア -->
@@ -681,6 +729,29 @@
 
  menuBtn.addEventListener('click', () => { navMenu.classList.add('active'); });
  closeBtn.addEventListener('click', () => { navMenu.classList.remove('active'); });
+
+ // --- ヘッダー画像の自動スライドショー ---
+ let slideIndex = 0;
+ function showSlides() {
+     let slides = document.getElementsByClassName("slide");
+     let dots = document.getElementsByClassName("dot");
+     
+     for (let i = 0; i < slides.length; i++) {
+         slides[i].classList.remove("active");
+         dots[i].classList.remove("active-dot");
+     }
+     
+     slideIndex++;
+     if (slideIndex > slides.length) { slideIndex = 1; }
+     
+     slides[slideIndex - 1].classList.add("active");
+     dots[slideIndex - 1].classList.add("active-dot");
+     
+     setTimeout(showSlides, 3500); // 3.5秒ごとに切り替え
+ }
+ if (document.getElementsByClassName("slide").length > 0) {
+     showSlides();
+ }
 
  // AI愛ちゃん画面分割パネル制御
  const aiToggleBtn = document.getElementById('aiToggleBtn');
