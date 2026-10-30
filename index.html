@@ -817,6 +817,56 @@
  footerAboutLink.addEventListener('click', (e) => { e.preventDefault(); aboutModal.classList.add('open'); });
  closeAboutBtn.addEventListener('click', () => aboutModal.classList.remove('open'));
  aboutModal.addEventListener('click', (e) => { if (e.target === aboutModal) aboutModal.classList.remove('open'); });
+
+
+ // --- 指でのスワイプ（フリック）操作でスライドを進める・戻すコード ---
+const slideshowContainer = document.getElementById("slideshowContainer");
+let touchStartX = 0;
+let touchEndX = 0;
+
+// 画面に指が触れた瞬間を記憶
+slideshowContainer.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+// 指が離れた瞬間を記憶し、距離を計算
+slideshowContainer.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipeGesture();
+}, { passive: true });
+
+function handleSwipeGesture() {
+    const threshold = 40; // スワイプとみなす最低限の距離（ピクセル）
+    
+    if (touchStartX - touchEndX > threshold) {
+        // 【左へスワイプ】次のスライドへ進む
+        // (自動切替のタイマーもリセットされます)
+        plusSlides(1);
+    } else if (touchEndX - touchStartX > threshold) {
+        // 【右へスワイプ】前のスライドへ戻る
+        plusSlides(-1);
+    }
+}
+
+// スライドを相対的に進める・戻す関数
+function plusSlides(n) {
+    let slides = document.getElementsByClassName("slide");
+    let dots = document.getElementsByClassName("dot");
+    
+    // 現在の active を消す
+    slides[slideIndex - 1].classList.remove("active");
+    dots[slideIndex - 1].classList.remove("active-dot");
+    
+    // インデックスを計算
+    slideIndex += n;
+    if (slideIndex > slides.length) { slideIndex = 1; }
+    if (slideIndex < 1) { slideIndex = slides.length; }
+    
+    // 新しい active をつける
+    slides[slideIndex - 1].classList.add("active");
+    dots[slideIndex - 1].classList.add("active-dot");
+}
+ 
  </script>
 
 </body>
