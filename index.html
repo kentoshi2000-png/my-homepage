@@ -106,22 +106,14 @@
  text-align: center;
  }
 
-
  .slideshow-container {
  position: relative;
- max-width: 100%; /* 👈 横幅いっぱいまで広げる */
+ max-width: 100%;
  margin: 0 auto;
  overflow: hidden;
+ touch-action: pan-y; /* スマホで横スクロールを妨げずスワイプしやすくする */
  }
 
- .slide {
- display: none;
- width: 100%; /* 👈 横幅は画面幅に合わせる */
- height: 350px; /* 👈 縦幅をお好みの高さに固定する（例：280px） */
- object-fit: contain; /* 👈 イラスト全体が綺麗に収まるようにする */
- border-radius: 4px;
- }
- 
  .slide {
  display: none;
  width: 100%;
@@ -154,6 +146,7 @@
  border-radius: 50%;
  display: inline-block;
  transition: background-color 0.3s ease;
+ cursor: pointer;
  }
 
  .dot.active-dot {
@@ -218,13 +211,11 @@
  margin-bottom: 25px;
  }
 
- /* 各リンクアイテム（リスト）のスタイル */
  .footer-menu li {
  list-style: none;
  margin: 5px 0;
  }
 
- /* 最初以外の項目の前に縦線（|）を挿入 */
  .footer-menu li:not(:first-child)::before {
  content: "|";
  margin: 0 12px;
@@ -557,10 +548,11 @@
 
  <!-- ヘッダー画像スライドショーエリア -->
  <div class="hero">
- <div class="slideshow-container">
+ <div class="slideshow-container" id="slideshowContainer"> <!-- 👈 idを付与しました -->
  <img src="CP01.png" alt="シンデレラケアプランセンター スライド1" class="slide active">
  <img src="CP02.png" alt="シンデレラケアプランセンター スライド2" class="slide">
  <img src="CP03.png" alt="シンデレラケアプランセンター スライド3" class="slide">
+ <!-- 展示会用などの画像を追加したい場合はここに <img src="exhibition.png" class="slide"> を増やせます -->
  
  <!-- ドットインジケーター（〇〇🟢） -->
  <div class="dot-container">
@@ -739,12 +731,14 @@
  menuBtn.addEventListener('click', () => { navMenu.classList.add('active'); });
  closeBtn.addEventListener('click', () => { navMenu.classList.remove('active'); });
 
- // --- ヘッダー画像の自動スライドショー ---
+ // --- ヘッダー画像の自動スライドショー ＆ スワイプ対応 ---
  let slideIndex = 0;
+ let slideTimer = null;
+ const slides = document.getElementsByClassName("slide");
+ const dots = document.getElementsByClassName("dot");
+ const slideshowContainer = document.getElementById("slideshowContainer");
+
  function showSlides() {
-     let slides = document.getElementsByClassName("slide");
-     let dots = document.getElementsByClassName("dot");
-     
      for (let i = 0; i < slides.length; i++) {
          slides[i].classList.remove("active");
          dots[i].classList.remove("active-dot");
@@ -756,10 +750,62 @@
      slides[slideIndex - 1].classList.add("active");
      dots[slideIndex - 1].classList.add("active-dot");
      
-     setTimeout(showSlides, 5000); // 5秒ごとに切り替え
+     resetTimer();
  }
- if (document.getElementsByClassName("slide").length > 0) {
+
+ function resetTimer() {
+     if (slideTimer) clearTimeout(slideTimer);
+     slideTimer = setTimeout(() => {
+         showSlides();
+         resetTimer();
+     }, 5000); // 5秒ごとに切り替え
+ }
+
+ if (slides.length > 0) {
      showSlides();
+ }
+
+ // --- 指でのスワイプ（フリック）操作 ---
+ let touchStartX = 0;
+ let touchEndX = 0;
+
+ if (slideshowContainer) {
+     slideshowContainer.addEventListener('touchstart', (e) => {
+         touchStartX = e.changedTouches[0].screenX;
+     }, { passive: true });
+
+     slideshowContainer.addEventListener('touchend', (e) => {
+         touchEndX = e.changedTouches[0].screenX;
+         handleSwipeGesture();
+     }, { passive: true });
+ }
+
+ function handleSwipeGesture() {
+     const threshold = 40; // スワイプとみなす最小距離
+     
+     if (touchStartX - touchEndX > threshold) {
+         // 【左へスワイプ】次のスライドへ
+         slideIndex++;
+         if (slideIndex > slides.length) { slideIndex = 1; }
+         updateSlideManually();
+     } else if (touchEndX - touchStartX > threshold) {
+         // 【右へスワイプ】前のスライドへ
+         slideIndex--;
+         if (slideIndex < 1) { slideIndex = slides.length; }
+         updateSlideManually();
+     }
+ }
+
+ function updateSlideManually() {
+     for (let i = 0; i < slides.length; i++) {
+         slides[i].classList.remove("active");
+         dots[i].classList.remove("active-dot");
+     }
+     slides[slideIndex - 1].classList.add("active");
+     dots[slideIndex - 1].classList.add("active-dot");
+     
+     // 手動で動かしたあとも自動スライドのタイマーをリセットして再スタート
+     resetTimer();
  }
 
  // AI愛ちゃん画面分割パネル制御
@@ -770,7 +816,6 @@
  const aiIframe = document.querySelector('.ai-chat-iframe');
 
  aiToggleBtn.addEventListener('click', () => {
-   // パネルが開く時、iframeの画面を必ずweb-chatにリセットする
    if (!aiChatPanel.classList.contains('open')) {
      aiIframe.src = 'https://sakai-bot.onrender.com/web-chat';
    }
@@ -793,8 +838,9 @@
  openModalBtn.addEventListener('click', () => noticeModal.classList.add('open'));
  menuNoticeLink.addEventListener('click', (e) => { e.preventDefault(); navMenu.classList.remove('active'); noticeModal.classList.add('open'); });
  footerNoticeLink.addEventListener('click', (e) => { e.preventDefault(); noticeModal.classList.add('open'); });
- closeModalBtn.addEventListener('click', () => noticeModal.classList.remove('open'));
+ closeModalBtn.addEventListener('click', () => noticeModal.classList.add('open')); // 修正
  noticeModal.addEventListener('click', (e) => { if (e.target === noticeModal) noticeModal.classList.remove('open'); });
+ closeModalBtn.addEventListener('click', () => noticeModal.classList.remove('open'));
 
  // 個人情報モーダル
  const privacyModal = document.getElementById('privacyModal');
@@ -817,56 +863,6 @@
  footerAboutLink.addEventListener('click', (e) => { e.preventDefault(); aboutModal.classList.add('open'); });
  closeAboutBtn.addEventListener('click', () => aboutModal.classList.remove('open'));
  aboutModal.addEventListener('click', (e) => { if (e.target === aboutModal) aboutModal.classList.remove('open'); });
-
-
- // --- 指でのスワイプ（フリック）操作でスライドを進める・戻すコード ---
-const slideshowContainer = document.getElementById("slideshowContainer");
-let touchStartX = 0;
-let touchEndX = 0;
-
-// 画面に指が触れた瞬間を記憶
-slideshowContainer.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-}, { passive: true });
-
-// 指が離れた瞬間を記憶し、距離を計算
-slideshowContainer.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipeGesture();
-}, { passive: true });
-
-function handleSwipeGesture() {
-    const threshold = 40; // スワイプとみなす最低限の距離（ピクセル）
-    
-    if (touchStartX - touchEndX > threshold) {
-        // 【左へスワイプ】次のスライドへ進む
-        // (自動切替のタイマーもリセットされます)
-        plusSlides(1);
-    } else if (touchEndX - touchStartX > threshold) {
-        // 【右へスワイプ】前のスライドへ戻る
-        plusSlides(-1);
-    }
-}
-
-// スライドを相対的に進める・戻す関数
-function plusSlides(n) {
-    let slides = document.getElementsByClassName("slide");
-    let dots = document.getElementsByClassName("dot");
-    
-    // 現在の active を消す
-    slides[slideIndex - 1].classList.remove("active");
-    dots[slideIndex - 1].classList.remove("active-dot");
-    
-    // インデックスを計算
-    slideIndex += n;
-    if (slideIndex > slides.length) { slideIndex = 1; }
-    if (slideIndex < 1) { slideIndex = slides.length; }
-    
-    // 新しい active をつける
-    slides[slideIndex - 1].classList.add("active");
-    dots[slideIndex - 1].classList.add("active-dot");
-}
- 
  </script>
 
 </body>
