@@ -106,27 +106,28 @@
  text-align: center;
  }
 
+
  .slideshow-container {
  position: relative;
- max-width: 100%;
+ max-width: 100%; /* 👈 横幅いっぱいまで広げる */
  margin: 0 auto;
  overflow: hidden;
- border-radius: 8px;
- touch-action: pan-y; /* 横スワイプを有効化 */
  }
 
  .slide {
  display: none;
- width: 100%;
- height: 350px;
- object-fit: cover;
- border-radius: 8px;
+ width: 100%; /* 👈 横幅は画面幅に合わせる */
+ height: 350px; /* 👈 縦幅をお好みの高さに固定する（例：280px） */
+ object-fit: contain; /* 👈 イラスト全体が綺麗に収まるようにする */
+ border-radius: 4px;
  }
-
- @media (max-width: 600px) {
+ 
  .slide {
- height: 240px; /* スマホ表示時の高さ */
- }
+ display: none;
+ width: 100%;
+ height: auto;
+ object-fit: cover;
+ border-radius: 4px;
  }
 
  .slide.active {
@@ -139,34 +140,24 @@
  to { opacity: 1; }
  }
 
- /* 画像下部に重なるレイヤー状（オーバーレイ）のドットインジケーター */
+ /* 下部の丸いドット（インジケーター） */
  .dot-container {
- position: absolute;
- bottom: 12px;
- left: 50%;
- transform: translateX(-50%);
- display: flex;
- gap: 8px;
- background: rgba(0, 0, 0, 0.3); /* 背景をうっすら黒くして見やすく */
- padding: 6px 14px;
- border-radius: 20px;
- backdrop-filter: blur(4px);
- z-index: 10;
+ text-align: center;
+ margin-top: 12px;
  }
 
  .dot {
- height: 10px;
- width: 10px;
- background-color: rgba(255, 255, 255, 0.6);
+ height: 11px;
+ width: 11px;
+ margin: 0 5px;
+ background-color: #d1d5db;
  border-radius: 50%;
  display: inline-block;
- transition: all 0.3s ease;
- cursor: pointer;
+ transition: background-color 0.3s ease;
  }
 
  .dot.active-dot {
- background-color: #10b981; /* 🟢 緑色のドット */
- transform: scale(1.2);
+ background-color: #10b981; /* 🟢 ご希望の緑色のドット */
  }
 
  /* 本文エリア */
@@ -227,11 +218,13 @@
  margin-bottom: 25px;
  }
 
+ /* 各リンクアイテム（リスト）のスタイル */
  .footer-menu li {
  list-style: none;
  margin: 5px 0;
  }
 
+ /* 最初以外の項目の前に縦線（|）を挿入 */
  .footer-menu li:not(:first-child)::before {
  content: "|";
  margin: 0 12px;
@@ -330,7 +323,7 @@
  margin-bottom: 2px;
  }
 
- /* お知らせバッジ */
+ /* --- お知らせバッジ --- */
  .princess-badge {
  position: fixed;
  bottom: 90px;
@@ -369,7 +362,7 @@
  60% {transform: translateY(-3px);}
  }
 
- /* AI愛ちゃんサイドパネル */
+ /* --- 画面分割用：AI愛ちゃんサイドパネル（チャット窓） --- */
  .ai-chat-panel {
  position: fixed;
  top: 0;
@@ -415,7 +408,7 @@
  flex: 1;
  }
 
- /* AI愛ちゃん起動ボタン */
+ /* AI愛ちゃん起動トリガーボタン（画面左下固定） */
  .ai-toggle-btn {
  position: fixed;
  bottom: 20px;
@@ -564,16 +557,16 @@
 
  <!-- ヘッダー画像スライドショーエリア -->
  <div class="hero">
- <div class="slideshow-container" id="slideshowContainer">
+ <div class="slideshow-container">
  <img src="CP01.png" alt="シンデレラケアプランセンター スライド1" class="slide active">
  <img src="CP02.png" alt="シンデレラケアプランセンター スライド2" class="slide">
  <img src="CP03.png" alt="シンデレラケアプランセンター スライド3" class="slide">
  
- <!-- ドットインジケーター（画像下部にオーバーレイ） -->
+ <!-- ドットインジケーター（〇〇🟢） -->
  <div class="dot-container">
- <span class="dot active-dot" onclick="currentSlide(0)"></span>
- <span class="dot" onclick="currentSlide(1)"></span>
- <span class="dot" onclick="currentSlide(2)"></span>
+ <span class="dot active-dot"></span>
+ <span class="dot"></span>
+ <span class="dot"></span>
  </div>
  </div>
  </div>
@@ -582,13 +575,13 @@
  <div class="content">
  <h3>シンデレラケアプランセンターについて</h3>
  <p>
- ケアプランを作る居宅介護支援事業所ではありませんよ。ここは「わぁ! ついにケアマネになれたよ!」って、研修や実習でお世話になった方々への感謝の気持ちを含めた自己没入感ヒタヒタのプライベートなホームページであり、わたしのアートインスタレーションの一部です。介護だけに限定したホームページでもありません。営利を目的としたものでもありません。<br><br>わたしは「つくらないケアマネ」です。わたしは、ご本人が「こうありたい」、「こうあってきた」というイメージをデザインします。ご本人がケアマネさんやケアするかたに想いを伝えやすいように、文書ではなく、アートで表現したいと思います。ただいま、開設準備中です。
+ ケアプランを作る居宅介護支援事業所ではありませんよ。ここは「わぁ! ついにケアマネになれたよ!」って、研修や実習でお世話になった方々への感謝の気持ちを含めた自己没入感ヒタヒタのプライベートなホームページであり、わたしのアートインスタレーションの一部です。介護だけに限定したホームページでもありません。営利を目的としたものでもありません。<br><br>わたしは「つくらないケアマネ」です。わたしは、ご本人が「こうありたい」、「こうあってきた」というイメージをデザインします。ご本人がケアマネさんやケアするかたに想いを伝えやすいように、文書ではなく、いっしょに絵でつくりたいと思います。ただいま、開設準備中です。
  </p>
 
  <p>
  ケアされる方は、いままでの人生での楽しかったこと、つらかったこと、いまのありのままの生活、からだの調子とかね、いろんなヒントを与えてくれています。ヒントとは、シンデレラの童話のなかで12時になって魔法がとけて置き去られたガラスの靴の片方のような、たいせつな「想い」だと思います。そのヒントにピッタリとしたケアプランってありますよね。そのイメージをづくりをお手伝いするのです。
  </p>
- <div class="image-placeholder" style="text-align: center;">
+ <div class="image-placeholder">
  <img src="shoe001.png" alt="ガラスの靴" width="300">
  </div>
   
@@ -606,38 +599,41 @@
  </div>
  </div>
 
- <!-- Q&Aセクション -->
- <div class="qa-container" style="max-width: 800px; margin: 40px auto; padding: 0 20px;">
- <h2 class="section-title" style="font-size: 1.5rem; border-bottom: 2px solid #edf2f7; padding-bottom: 10px; margin-top: 40px; margin-bottom: 25px;">Q &amp; A</h2>
+        <!-- Q&Aセクション -->
+        <div class="qa-container" style="max-width: 800px; margin: 40px auto; padding: 0 20px;">
+            <h2 class="section-title" style="font-size: 1.5rem; border-bottom: 2px solid #edf2f7; padding-bottom: 10px; margin-top: 40px; margin-bottom: 25px;">Q &amp; A</h2>
 
- <div class="qa-block" style="margin-bottom: 30px;">
- <div class="qa-question" style="font-size: 1.2rem; font-weight: bold; color: #2b6cb0; margin-bottom: 15px;">「Cinderella for you」って、どんな意味？</div>
- <div class="qa-answer">
- <p style="margin-bottom: 15px;">このフレーズは、当センターの名前「シンデレラケアプランセンター」とも深く関連しているんですよ。</p>
- 
- <ol style="padding-left: 20px; margin-bottom: 20px;">
- <li style="margin-bottom: 20px;">
- <strong style="color: #2d3748; font-size: 1.05rem;">「Cinderella（シンデレラ）」</strong><br>
- シンデレラは、困難な状況にありながらも、希望を忘れずに、最後には幸せを掴むおとぎ話の主人公ですよね。私たちは、ケアを必要とされる方やそのご家族が抱えるお悩みや大変さに寄り添い、シンデレラのように、ご自身らしい「幸せな生活」や「希望」を見つけられるよう、お手伝いしたいという願いを込めています。
- </li>
- <li style="margin-bottom: 20px;">
- <strong style="color: #2d3748; font-size: 1.05rem;">「for you（フォー・ユー）」</strong><br>
- これは、「あなたのために」という意味ですね。<br>
- つまり、「Cinderella for you」には、「<strong>あなただけのシンデレラ物語を</strong>」、あるいは「<strong>あなたが（困難を乗り越え）輝けるよう、あなたのために</strong>」というメッセージを込めています。<br>
- ケアが必要になったとしても、その人らしく、心豊かに、そして希望を持って生活できるようなプランを、一人ひとりの方に合わせて一緒に考えていきたい、そんな想いをこめました。
- </li>
- </ol>
+            <div class="qa-block" style="margin-bottom: 30px;">
+                <div class="qa-question" style="font-size: 1.2rem; font-weight: bold; color: #2b6cb0; margin-bottom: 15px;">「Cinderella for you」って、どんな意味？</div>
+                <div class="qa-answer">
+                    <p style="margin-bottom: 15px;">このフレーズは、当センターの名前「シンデレラケアプランセンター」とも深く関連しているんですよ。</p>
+                    
+                    <ol style="padding-left: 20px; margin-bottom: 20px;">
+                        <li style="margin-bottom: 20px;">
+                            <strong style="color: #2d3748; font-size: 1.05rem;">「Cinderella（シンデレラ）」</strong><br>
+                            シンデレラは、困難な状況にありながらも、希望を忘れずに、最後には幸せを掴むおとぎ話の主人公ですよね。私たちは、ケアを必要とされる方やそのご家族が抱えるお悩みや大変さに寄り添い、シンデレラのように、ご自身らしい「幸せな生活」や「希望」を見つけられるよう、お手伝いしたいという願いを込めています。
+                        </li>
+                        <li style="margin-bottom: 20px;">
+                            <strong style="color: #2d3748; font-size: 1.05rem;">「for you（フォー・ユー）」</strong><br>
+                            これは、「あなたのために」という意味ですね。<br>
+                            つまり、「Cinderella for you」には、「<strong>あなただけのシンデレラ物語を</strong>」、あるいは「<strong>あなたが（困難を乗り越え）輝けるよう、あなたのために</strong>」というメッセージを込めています。<br>
+                            ケアが必要になったとしても、その人らしく、心豊かに、そして希望を持って生活できるようなプランを、一人ひとりの方に合わせて一緒に考えていきたい、そんな想いをこめました。
+                        </li>
+                    </ol>
 
- <div class="caregiver-note" style="background: #f0fff4; border: 1px solid #c6f6d5; padding: 20px; border-radius: 8px; margin-top: 20px;">
- <p style="margin: 0;">「for you（フォー・ユー）」には、ケアをする人たちへの想いも込めています。一生懸命に働いていても、報酬が共わなかったり、周りから認められなかったりすることってありますよね。それでは豊かになれませんよね。ケアをする人たちがしあわせになれないって、こんなことは間違っています。ケアワーカーさんにもシンデレラストーリーをかなえて欲しいのです。</p>
- </div>
- </div>
- </div>
- </div>
+                    <div class="caregiver-note" style="background: #f0fff4; border: 1px solid #c6f6d5; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                        <p style="margin: 0;">「for you（フォー・ユー）」には、ケアをする人たちへの想いも込めています。一生懸命に働いていても、報酬が共わなかったり、周りから認められなかったりすることってありますよね。それでは豊かになれませんよね。ケアをする人たちがしあわせになれないって、こんなことは間違っています。ケアワーカーさんにもシンデレラストーリーをかなえて欲しいのです。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
- <div class="image-placeholder" style="text-align: center;">
- <img src="workercinderella.png" alt="ガラスの靴" width="400" style="max-width: 100%; height: auto;">
- </div>
+
+<div class="image-placeholder" style="text-align: center;">
+  <img src="workercinderella.png" alt="ガラスの靴" width="400">
+</div>
+
+  
 
  <!-- フッターエリア -->
  <footer>
@@ -662,7 +658,7 @@
  </div>
 
  <p class="copyright">© 2026 Cinderella Care Plan Center. All Rights Reserved.</p>
- <p class="copyright">Built with Python &amp; Flask </p>
+ <p class="copyright">Built with Python & Flask </p>
  </footer>
 
  <!-- ページトップへ移動ボタン -->
@@ -743,85 +739,43 @@
  menuBtn.addEventListener('click', () => { navMenu.classList.add('active'); });
  closeBtn.addEventListener('click', () => { navMenu.classList.remove('active'); });
 
- // --- ヘッダー画像のスライドショー＆フリック操作対応 ---
+ // --- ヘッダー画像の自動スライドショー ---
  let slideIndex = 0;
- let slideTimer = null;
- const slides = document.getElementsByClassName("slide");
- const dots = document.getElementsByClassName("dot");
- const container = document.getElementById("slideshowContainer");
-
- function renderSlide(index) {
- for (let i = 0; i < slides.length; i++) {
- slides[i].classList.remove("active");
- dots[i].classList.remove("active-dot");
+ function showSlides() {
+     let slides = document.getElementsByClassName("slide");
+     let dots = document.getElementsByClassName("dot");
+     
+     for (let i = 0; i < slides.length; i++) {
+         slides[i].classList.remove("active");
+         dots[i].classList.remove("active-dot");
+     }
+     
+     slideIndex++;
+     if (slideIndex > slides.length) { slideIndex = 1; }
+     
+     slides[slideIndex - 1].classList.add("active");
+     dots[slideIndex - 1].classList.add("active-dot");
+     
+     setTimeout(showSlides, 5000); // 5秒ごとに切り替え
  }
- slides[index].classList.add("active");
- dots[index].classList.active-dot ? dots[index].classList.add("active-dot") : dots[index].classList.add("active-dot");
- }
-
- function startTimer() {
- resetTimer();
- slideTimer = setInterval(() => {
- slideIndex = (slideIndex + 1) % slides.length;
- renderSlide(slideIndex);
- }, 5000);
- }
-
- function resetTimer() {
- if (slideTimer) clearInterval(slideTimer);
- }
-
- function currentSlide(index) {
- slideIndex = index;
- renderSlide(slideIndex);
- startTimer();
- }
-
- // タッチ・フリック操作（スワイプ）の判定
- let touchStartX = 0;
- let touchEndX = 0;
-
- container.addEventListener('touchstart', (e) => {
- touchStartX = e.changedTouches[0].screenX;
- }, { passive: true });
-
- container.addEventListener('touchend', (e) => {
- touchEndX = e.changedTouches[0].screenX;
- handleSwipe();
- }, { passive: true });
-
- function handleSwipe() {
- const swipeThreshold = 40; // スワイプと判定するピクセル量
- if (touchStartX - touchEndX > swipeThreshold) {
- // 左へスワイプ → 次のスライド
- slideIndex = (slideIndex + 1) % slides.length;
- renderSlide(slideIndex);
- startTimer();
- } else if (touchEndX - touchStartX > swipeThreshold) {
- // 右へスワイプ → 前のスライド
- slideIndex = (slideIndex - 1 + slides.length) % slides.length;
- renderSlide(slideIndex);
- startTimer();
- }
- }
-
- if (slides.length > 0) {
- renderSlide(0);
- startTimer();
+ if (document.getElementsByClassName("slide").length > 0) {
+     showSlides();
  }
 
  // AI愛ちゃん画面分割パネル制御
  const aiToggleBtn = document.getElementById('aiToggleBtn');
  const aiChatPanel = document.getElementById('aiChatPanel');
  const aiChatCloseBtn = document.getElementById('aiChatCloseBtn');
+
  const aiIframe = document.querySelector('.ai-chat-iframe');
 
  aiToggleBtn.addEventListener('click', () => {
- if (!aiChatPanel.classList.contains('open')) {
- aiIframe.src = 'https://sakai-bot.onrender.com/web-chat';
- }
- aiChatPanel.classList.toggle('open');
- document.body.classList.toggle('chat-open');
+   // パネルが開く時、iframeの画面を必ずweb-chatにリセットする
+   if (!aiChatPanel.classList.contains('open')) {
+     aiIframe.src = 'https://sakai-bot.onrender.com/web-chat';
+   }
+   aiChatPanel.classList.toggle('open');
+   document.body.classList.toggle('chat-open');
  });
 
  aiChatCloseBtn.addEventListener('click', () => {
